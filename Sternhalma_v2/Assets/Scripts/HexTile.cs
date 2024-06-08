@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class HexTile : MonoBehaviour
 {
-    [SerializeField] private Color _baseColor, _offsetColor;
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private GameObject _highlight;
 
-    public void Init(bool isOffset)
-    {
-        _renderer.color = isOffset ? _offsetColor : _baseColor;
-    }
+    public BaseUnit OccupiedUnit;
+    public bool isEmpty => OccupiedUnit == null;
 
     private void OnMouseEnter()
     {
@@ -21,5 +18,16 @@ public class HexTile : MonoBehaviour
     private void OnMouseExit()
     {
         _highlight.SetActive(false);
+    }
+
+    public void SetUnit(BaseUnit unit)
+    {
+        if(unit.OccupiedTile != null)
+        {
+            unit.OccupiedTile.OccupiedUnit = null;
+        }
+        unit.transform.position = transform.position;
+        OccupiedUnit = unit;
+        unit.OccupiedTile = this;
     }
 }

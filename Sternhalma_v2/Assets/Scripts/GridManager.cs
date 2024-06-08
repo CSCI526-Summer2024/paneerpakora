@@ -6,54 +6,84 @@ using UnityEngine.Tilemaps;
 public class GridManager : MonoBehaviour
 {
     //[SerializeField] private HexTile _tile;
-    public GameObject hexPrefab;
+
+    public static GridManager Instance;
+
+    public HexTile hexPrefab;
     public int gridWidth = 10;
     public int gridHeight = 10;
     public float hexSize = 1f;
-    
+
+    private Dictionary<Vector3, HexTile> posTile;
+    private Dictionary<HexTile, Vector3> tilePos;
+    private Dictionary<Vector3, Vector3> posTranslator;
+
 
     // Start is called before the first frame update
-    void Start()
+    //void Start()
+    //{
+    //    GenerateHexGrid();  
+    //}
+
+    private void Awake()
     {
-        GenerateHexGrid();  
+        Instance = this;
     }
 
-    void GenerateHexGrid()
+    public void GenerateHexGrid()
     {
-        float hexWidth = hexSize;
-        float hexHeight = hexSize;
+        float hexWidth = hexSize + 0.2f;
+        float hexHeight = hexSize * Mathf.Sqrt(3) + 0.2f;
 
-        for (int x = -2; x <= 2; x++)
+        posTile = new Dictionary<Vector3, HexTile>();
+        tilePos = new Dictionary<HexTile, Vector3>();
+        posTranslator = new Dictionary<Vector3, Vector3>();
+
+        for (float x = -3; x <= 3; x += 1.5f)
         {
-            if (x == -2 || x == 2)
+            if (x == -3.0f || x == 3.0f)
             {
                 for (int y = -1; y <= 1; y++)
                 {
+                    //Debug.Log("Coord");
+                    //Debug.Log(x + " " + y);
                     float xPos = x * hexWidth;
-                    float yPos = y * hexHeight + (x % 2 == 0 ? 0 : hexHeight / 2);
+                    float yPos = y * hexHeight + (x % 3 == 0 ? 0 : hexHeight / 2);
 
-                    GameObject hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
+                    HexTile hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
                     hex.transform.parent = this.transform;
                     hex.name = $"Hex_{x}_{y}";
 
-                    Debug.Log(x + " " + y);
-                    Debug.Log(xPos + " " + yPos);
+                    tilePos[hex] = new Vector3(xPos, yPos, 0);
+                    posTile[new Vector3(xPos, yPos, 0)] = hex;
+
+                    posTranslator[new Vector3(x, y, 0)] = new Vector3(xPos, yPos, 0);
+
+                    //Debug.Log("Pos");
+                    //Debug.Log(xPos + " " + yPos);
                 }
             }
 
-            else if (x == -1 || x == 1)
+            else if (x == -1.5f || x == 1.5f)
             {
                 for (int y = -2; y <= 1; y++)
                 {
+                    //Debug.Log("Coord");
+                    //Debug.Log(x + " " + y);
                     float xPos = x * hexWidth;
-                    float yPos = y * hexHeight + (x % 2 == 0 ? 0 : hexHeight / 2);
+                    float yPos = y * hexHeight + (x % 3 == 0 ? 0 : hexHeight / 2);
 
-                    GameObject hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
+                    HexTile hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
                     hex.transform.parent = this.transform;
                     hex.name = $"Hex_{x}_{y}";
 
-                    Debug.Log(x + " " + y);
-                    Debug.Log(xPos + " " + yPos);
+                    tilePos[hex] = new Vector3(xPos, yPos, 0);
+                    posTile[new Vector3(xPos, yPos, 0)] = hex;
+
+                    posTranslator[new Vector3(x, y, 0)] = new Vector3(xPos, yPos, 0);
+
+                    //Debug.Log("Pos");
+                    //Debug.Log(xPos + " " + yPos);
                 }
             }
 
@@ -61,28 +91,61 @@ public class GridManager : MonoBehaviour
             {
                 for (int y = -2; y <= 2; y++)
                 {
+                    //Debug.Log("Coord");
+                    //Debug.Log(x + " " + y);
                     float xPos = x * hexWidth;
-                    float yPos = y * hexHeight + (x % 2 == 0 ? 0 : hexHeight / 2);
+                    float yPos = y * hexHeight + (x % 3 == 0 ? 0 : hexHeight / 2);
 
-                    GameObject hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
+                    HexTile hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
                     hex.transform.parent = this.transform;
                     hex.name = $"Hex_{x}_{y}";
 
-                    Debug.Log(x + " " + y);
-                    Debug.Log(xPos + " " + yPos);
+                    tilePos[hex] = new Vector3(xPos, yPos, 0);
+                    posTile[new Vector3(xPos, yPos, 0)] = hex;
+
+                    posTranslator[new Vector3(x, y, 0)] = new Vector3(xPos, yPos, 0);
+                    //Debug.Log("Pos");
+                    //Debug.Log(xPos + " " + yPos);
                 }
             }
-
-
-
         }
+
+        Debug.Log(tilePos.Count);
+        Debug.Log(posTile.Count);
+
+        GameManager.Instance.ChangeState(GameState.SpawnObjects);
     }
 
+    public HexTile GetTileAtPos(Vector3 pos)
+    {
+       if(posTile.TryGetValue(pos, out var tile))
+       {
+            return tile;
+       }
+        return null;
+    }
 
+    public Vector3 GetPosOfTile(HexTile tile)
+    {
+        if (tilePos.TryGetValue(tile, out var pos))
+        {
+            return pos;
+        }
+        return new Vector3(-100, -100, 0);
+    }
+
+    public Vector3 GetTranslatedPos(Vector3 pos)
+    {
+        if (posTranslator.TryGetValue(pos, out var upPos))
+        {
+            return upPos;
+        }
+        return new Vector3(-100, -100, 0);
+    }
 
     // Update is called once per frame
-    void Update()
-    {
+    //void Update()
+    //{
         
-    }
+    //}
 }
