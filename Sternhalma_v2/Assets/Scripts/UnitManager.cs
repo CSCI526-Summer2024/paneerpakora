@@ -9,8 +9,6 @@ public class UnitManager : MonoBehaviour
     public static UnitManager Instance;
 
     private List<ScriptableUnit> units;
-    public BaseUnit selectedUnit;
-    public Vector3 selectedUnitCoordinate;
     public HexTile selectedTile;
 
     public Dictionary<HexTile, BaseUnit> tileToUnit;
@@ -35,7 +33,7 @@ public class UnitManager : MonoBehaviour
         List<Vector3> scissorList = new List<Vector3> { new Vector3(0, 0) };
         var scissorCount = scissorList.Count;
 
-        for (int i=0; i<scissorCount; i++)
+        for (int i = 0; i < scissorCount; i++)
         {
             var scissorPrefab = GetUnit<Scissor>(Faction.Scissor);
             BaseUnit spawnedScissor = Instantiate(scissorPrefab);
@@ -60,18 +58,18 @@ public class UnitManager : MonoBehaviour
                 (
                 GridManager.Instance.GetTranslatedPos(rockList[i])
                 );
-
             rockTile.SetUnit(spawnedRock);
             tileToUnit[rockTile] = spawnedRock;
             currentStatus[rockList[i]] = spawnedRock;
         }
 
-        List<Vector3> paperList = new List<Vector3> { new Vector3(1.5f, -1) };
+        List<Vector3> paperList = new List<Vector3> { new Vector3(1.5f, -0.5f) };
         var paperCount = paperList.Count;
 
         for (int i = 0; i < paperCount; i++)
         {
             var paperPrefab = GetUnit<Paper>(Faction.Paper);
+
             BaseUnit spawnedPaper = Instantiate(paperPrefab);
             HexTile paperTile = GridManager.Instance.GetTileAtPos
                 (
@@ -83,6 +81,19 @@ public class UnitManager : MonoBehaviour
             currentStatus[paperList[i]] = spawnedPaper;
         }
 
-        //GameManager.Instance.ChangeState(GameState.PlayerTurn]);
+        GameManager.Instance.ChangeState(GameState.PlayerTurn);
+    }
+
+    public void SetSelectedTile(HexTile tile)
+    {
+        selectedTile = tile;
+    }
+
+    public void UpdateCurrentStatus(Vector3 rem1Pos, Vector3 rem2Pos, Vector3 addPos)
+    {
+        BaseUnit unit = currentStatus[rem1Pos];
+        currentStatus.Remove(rem1Pos);
+        currentStatus.Add(addPos, unit);
+        currentStatus.Remove(rem2Pos);
     }
 }

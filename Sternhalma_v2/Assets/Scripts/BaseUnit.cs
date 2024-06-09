@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class BaseUnit : MonoBehaviour
 {
-    public HexTile OccupiedTile;
+    public HexTile OccupiedTile = null;
     public Faction Faction;
+
+    public void SetActive(bool b)
+    {
+        this.SetActive(b);
+    }
 }

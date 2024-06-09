@@ -41,5 +41,7 @@ public enum GameState
 {
     GenerateGrid = 0,
     SpawnObjects = 1,
-    PlayerTurn = 2
+    PlayerTurn = 2,
+    WinState = 3,
+    LoseState = 4
 }
