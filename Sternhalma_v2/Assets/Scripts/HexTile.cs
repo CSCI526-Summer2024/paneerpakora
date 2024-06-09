@@ -6,6 +6,8 @@ public class HexTile : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _renderer;
     [SerializeField] private GameObject _highlight;
+    [SerializeField] private GameObject highlightOnSelect;
+
 
     public BaseUnit OccupiedUnit;
     public bool isEmpty => this.OccupiedUnit == null;
@@ -36,8 +38,6 @@ public class HexTile : MonoBehaviour
 
     public void RemoveUnit(BaseUnit unit)
     {
-        //Debug.Log(unit);
-        //unit.SetTile(null);
         unit.OccupiedTile = null;
         this.OccupiedUnit = null;
         Destroy(unit.gameObject);
@@ -64,29 +64,30 @@ public class HexTile : MonoBehaviour
 
         if (this.OccupiedUnit == null && selectedTile == null)
         {
-            Debug.Log("1");
+            //Debug.Log("1");
             UnitManager.Instance.SetSelectedTile(null);
             return;
         }
 
         else if (this.OccupiedUnit != null && selectedTile != null)
         {
-            Debug.Log("2");
+            //Debug.Log("2");
             UnitManager.Instance.SetSelectedTile(null);
+            selectedTile.highlightOnSelect.SetActive(false);
             return;
         }
 
         else if (this.OccupiedUnit != null && selectedTile == null)
         {
-            Debug.Log("3");
-            UnitManager.Instance.SetSelectedTile(this);
+            //Debug.Log("3");
+            UnitManager.Instance.SetSelectedTile(this); 
+            this.highlightOnSelect.SetActive(true);
             return;
         }
 
         else
         {
-            Debug.Log("4");
-            //Debug.Log(selectedTile.OccupiedUnit);
+            //Debug.Log("4");
             Vector3 selectedPos = selectedTile.posEasy;
             Vector3 currentPos = this.posEasy;
 
@@ -97,84 +98,92 @@ public class HexTile : MonoBehaviour
             {
                 if (selectedTile.OccupiedUnit.Faction == Faction.Rock)
                 {
-                    Debug.Log("5");
+                    //Debug.Log("5");
                     Vector3 midPos = Vector3.Lerp(selectedPos, currentPos, 0.5f);
                     HexTile midTile = GridManager.Instance.GetTileAtPos(GridManager.Instance.GetTranslatedPos(midPos));
 
                     if (midTile.OccupiedUnit != null && (midTile.OccupiedUnit.Faction == Faction.Scissor) && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Scissor)
                     {
-                        Debug.Log("6");
+                        //Debug.Log("6");
                         this.SetUnit(selectedTile.OccupiedUnit);
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         midTile.RemoveUnit(midTile.OccupiedUnit);
                         UnitManager.Instance.SetSelectedTile(null);
+                        selectedTile.highlightOnSelect.SetActive(false);
                     }
 
                     else
                     {
-                        Debug.Log("7");
+                        //Debug.Log("7");
                         UnitManager.Instance.SetSelectedTile(null);
+                        selectedTile.highlightOnSelect.SetActive(false);
                         return;
                     }
                 }
 
                 else if (selectedTile.OccupiedUnit.Faction == Faction.Paper)
                 {
-                    Debug.Log("8");
+                    //Debug.Log("8");
                     Vector3 midPos = Vector3.Lerp(selectedPos, currentPos, 0.5f);
                     HexTile midTile = GridManager.Instance.GetTileAtPos(GridManager.Instance.GetTranslatedPos(midPos));
 
                     if (midTile.OccupiedUnit != null && (midTile.OccupiedUnit.Faction == Faction.Rock) && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Rock)
                     {
-                        Debug.Log("9");
+                        //Debug.Log("9");
                         this.SetUnit(selectedTile.OccupiedUnit);
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         midTile.RemoveUnit(midTile.OccupiedUnit);
                         UnitManager.Instance.SetSelectedTile(null);
+                        selectedTile.highlightOnSelect.SetActive(false);
                     }
 
                     else
                     {
-                        Debug.Log("10");
+                        //Debug.Log("10");
                         UnitManager.Instance.SetSelectedTile(null);
+                        selectedTile.highlightOnSelect.SetActive(false);
                         return;
                     }
                 }
 
                 else if (selectedTile.OccupiedUnit.Faction == Faction.Scissor)
                 {
-                    Debug.Log("11");
+                    //Debug.Log("11");
                     Vector3 midPos = Vector3.Lerp(selectedPos, currentPos, 0.5f);
                     HexTile midTile = GridManager.Instance.GetTileAtPos(GridManager.Instance.GetTranslatedPos(midPos));
 
                     if (midTile.OccupiedUnit != null && (midTile.OccupiedUnit.Faction == Faction.Paper) && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Paper)
                     {
-                        Debug.Log("12");
+                        //Debug.Log("12");
                         this.SetUnit(selectedTile.OccupiedUnit);
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         midTile.RemoveUnit(midTile.OccupiedUnit);
                         UnitManager.Instance.SetSelectedTile(null);
+                        selectedTile.highlightOnSelect.SetActive(false);
                     }
 
                     else
                     {
-                        Debug.Log("13");
+                        //Debug.Log("13");
                         UnitManager.Instance.SetSelectedTile(null);
+                        selectedTile.highlightOnSelect.SetActive(false);
                         return;
                     }
                 }
 
                 else
                 {
-                    Debug.Log("14");
+                    //Debug.Log("14");
                     UnitManager.Instance.SetSelectedTile(null);
+                    selectedTile.highlightOnSelect.SetActive(false);
                     return;
                 }
             }
             else
             {
-                Debug.Log("15");
+                //Debug.Log("15");
                 UnitManager.Instance.SetSelectedTile(null);
+                selectedTile.highlightOnSelect.SetActive(false);
                 return;
             }
         }
