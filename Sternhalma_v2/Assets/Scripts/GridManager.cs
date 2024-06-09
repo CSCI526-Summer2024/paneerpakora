@@ -15,7 +15,6 @@ public class GridManager : MonoBehaviour
     public float hexSize = 1f;
 
     private Dictionary<Vector3, HexTile> posTile;
-    private Dictionary<HexTile, Vector3> tilePos;
     private Dictionary<Vector3, Vector3> posTranslator;
 
 
@@ -32,11 +31,10 @@ public class GridManager : MonoBehaviour
 
     public void GenerateHexGrid()
     {
-        float hexWidth = hexSize + 0.2f;
-        float hexHeight = hexSize * Mathf.Sqrt(3) + 0.2f;
+        float hexWidth = hexSize + 0.1f;
+        float hexHeight = hexSize * Mathf.Sqrt(3) + 0.1f;
 
         posTile = new Dictionary<Vector3, HexTile>();
-        tilePos = new Dictionary<HexTile, Vector3>();
         posTranslator = new Dictionary<Vector3, Vector3>();
 
         for (float x = -3; x <= 3; x += 1.5f)
@@ -45,16 +43,15 @@ public class GridManager : MonoBehaviour
             {
                 for (int y = -1; y <= 1; y++)
                 {
-                    //Debug.Log("Coord");
-                    //Debug.Log(x + " " + y);
                     float xPos = x * hexWidth;
-                    float yPos = y * hexHeight + (x % 3 == 0 ? 0 : hexHeight / 2);
-
+                    float yPos = y * hexHeight;
+                    
                     HexTile hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
                     hex.transform.parent = this.transform;
                     hex.name = $"Hex_{x}_{y}";
 
-                    tilePos[hex] = new Vector3(xPos, yPos, 0);
+                    hex.posEasy = new Vector3(x, y, 0);
+                    hex.posHard = new Vector3(xPos, yPos, 0);
                     posTile[new Vector3(xPos, yPos, 0)] = hex;
 
                     posTranslator[new Vector3(x, y, 0)] = new Vector3(xPos, yPos, 0);
@@ -66,18 +63,17 @@ public class GridManager : MonoBehaviour
 
             else if (x == -1.5f || x == 1.5f)
             {
-                for (int y = -2; y <= 1; y++)
+                for (float y = -1.5f; y <= 1.5f; y++)
                 {
-                    //Debug.Log("Coord");
-                    //Debug.Log(x + " " + y);
                     float xPos = x * hexWidth;
-                    float yPos = y * hexHeight + (x % 3 == 0 ? 0 : hexHeight / 2);
+                    float yPos = y * hexHeight;
 
                     HexTile hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
                     hex.transform.parent = this.transform;
                     hex.name = $"Hex_{x}_{y}";
 
-                    tilePos[hex] = new Vector3(xPos, yPos, 0);
+                    hex.posEasy = new Vector3(x, y, 0);
+                    hex.posHard = new Vector3(xPos, yPos, 0);
                     posTile[new Vector3(xPos, yPos, 0)] = hex;
 
                     posTranslator[new Vector3(x, y, 0)] = new Vector3(xPos, yPos, 0);
@@ -91,16 +87,15 @@ public class GridManager : MonoBehaviour
             {
                 for (int y = -2; y <= 2; y++)
                 {
-                    //Debug.Log("Coord");
-                    //Debug.Log(x + " " + y);
                     float xPos = x * hexWidth;
-                    float yPos = y * hexHeight + (x % 3 == 0 ? 0 : hexHeight / 2);
+                    float yPos = y * hexHeight;
 
                     HexTile hex = Instantiate(hexPrefab, new Vector3(xPos, yPos, 0), Quaternion.identity);
                     hex.transform.parent = this.transform;
                     hex.name = $"Hex_{x}_{y}";
 
-                    tilePos[hex] = new Vector3(xPos, yPos, 0);
+                    hex.posEasy = new Vector3(x, y, 0);
+                    hex.posHard = new Vector3(xPos, yPos, 0);
                     posTile[new Vector3(xPos, yPos, 0)] = hex;
 
                     posTranslator[new Vector3(x, y, 0)] = new Vector3(xPos, yPos, 0);
@@ -109,9 +104,6 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
-
-        Debug.Log(tilePos.Count);
-        Debug.Log(posTile.Count);
 
         GameManager.Instance.ChangeState(GameState.SpawnObjects);
     }
@@ -125,14 +117,14 @@ public class GridManager : MonoBehaviour
         return null;
     }
 
-    public Vector3 GetPosOfTile(HexTile tile)
-    {
-        if (tilePos.TryGetValue(tile, out var pos))
-        {
-            return pos;
-        }
-        return new Vector3(-100, -100, 0);
-    }
+    //public Vector3 GetPosOfTile(HexTile tile)
+    //{
+    //    if (tilePos.TryGetValue(tile, out var pos))
+    //    {
+    //        return pos;
+    //    }
+    //    return new Vector3(-100, -100, 0);
+    //}
 
     public Vector3 GetTranslatedPos(Vector3 pos)
     {
@@ -142,10 +134,4 @@ public class GridManager : MonoBehaviour
         }
         return new Vector3(-100, -100, 0);
     }
-
-    // Update is called once per frame
-    //void Update()
-    //{
-        
-    //}
 }
