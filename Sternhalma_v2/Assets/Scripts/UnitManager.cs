@@ -30,7 +30,7 @@ public class UnitManager : MonoBehaviour
         tileToUnit = new Dictionary<HexTile, BaseUnit>();
         currentStatus = new Dictionary<Vector3, BaseUnit>();
 
-        List<Vector3> scissorList = new List<Vector3> { new Vector3(0, 0) };
+        List<Vector3> scissorList = new List<Vector3> { new Vector3(0, 0), new Vector3(-3, -1) };
         var scissorCount = scissorList.Count;
 
         for (int i = 0; i < scissorCount; i++)
