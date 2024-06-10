@@ -43,16 +43,6 @@ public class HexTile : MonoBehaviour
         Destroy(unit.gameObject);
     }
 
-    //public void ValidMove(HexTile selectedTile, HexTile midTile)
-    //{
-    //    selectedTile.OccupiedUnit.transform.position = this.transform.position;
-    //    this.OccupiedUnit = selectedTile.OccupiedUnit;
-    //    selectedTile.OccupiedUnit = null;
-
-    //    midTile.OccupiedUnit.SetActive(false);
-    //    midTile.OccupiedUnit = null;
-    //}
-
     private void OnMouseDown()
     {
         if (GameManager.Instance.GameState != GameState.PlayerTurn)
