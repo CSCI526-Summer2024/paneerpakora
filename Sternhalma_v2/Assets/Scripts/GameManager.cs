@@ -10,7 +10,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void Start()
@@ -20,6 +27,8 @@ public class GameManager : MonoBehaviour
 
     public void ChangeState(GameState newState)
     {
+        Debug.Log($"Changing state from {GameState} to {newState}");
+
         GameState = newState;
         switch (newState)
         {
@@ -30,6 +39,12 @@ public class GameManager : MonoBehaviour
                 UnitManager.Instance.SpawnObjects();
                 break;
             case GameState.PlayerTurn:
+                break;
+            case GameState.WinState:
+                Debug.Log("Player Wins!");
+                break;
+            case GameState.LoseState:
+                Debug.Log("Player Loses!");
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
