@@ -7,10 +7,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public GameState GameState;
+    private Timer _timer;
 
     private void Awake()
     {
         Instance = this;
+        _timer = FindObjectOfType<Timer>();
     }
 
     private void Start()
@@ -31,9 +33,27 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.PlayerTurn:
                 break;
+            case GameState.WinState:
+                HandleWinState();
+                break;
+            case GameState.LoseState:
+                HandleLoseState();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
         }
+    }
+
+    private void HandleWinState()
+    {
+        Debug.Log("Game Won!");
+        _timer.DisplayEndGameText("You Win!");
+    }
+
+    private void HandleLoseState()
+    {
+        Debug.Log("Game Lost!");
+        _timer.DisplayEndGameText("You Lose!");
     }
 }
 

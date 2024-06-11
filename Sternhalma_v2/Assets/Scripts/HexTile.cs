@@ -8,7 +8,6 @@ public class HexTile : MonoBehaviour
     [SerializeField] private GameObject _highlight;
     [SerializeField] private GameObject highlightOnSelect;
 
-
     public BaseUnit OccupiedUnit;
     public bool isEmpty => this.OccupiedUnit == null;
 
@@ -17,7 +16,10 @@ public class HexTile : MonoBehaviour
 
     private void OnMouseEnter()
     {
-        _highlight.SetActive(true);
+        if (GameManager.Instance.GameState == GameState.PlayerTurn)
+        {
+            _highlight.SetActive(true);
+        }
     }
 
     private void OnMouseExit()
@@ -54,116 +56,86 @@ public class HexTile : MonoBehaviour
 
         if (this.OccupiedUnit == null && selectedTile == null)
         {
-            //Debug.Log("1");
             UnitManager.Instance.SetSelectedTile(null);
             return;
         }
-
         else if (this.OccupiedUnit != null && selectedTile != null)
         {
-            //Debug.Log("2");
             UnitManager.Instance.SetSelectedTile(null);
             selectedTile.highlightOnSelect.SetActive(false);
             return;
         }
-
         else if (this.OccupiedUnit != null && selectedTile == null)
         {
-            //Debug.Log("3");
-            UnitManager.Instance.SetSelectedTile(this); 
+            UnitManager.Instance.SetSelectedTile(this);
             this.highlightOnSelect.SetActive(true);
             return;
         }
-
         else
         {
-            //Debug.Log("4");
             Vector3 selectedPos = selectedTile.posEasy;
             Vector3 currentPos = this.posEasy;
 
             if ((selectedPos.x == currentPos.x && ((int)Mathf.Abs(currentPos.y - selectedPos.y) == 2)) ||
                 ((int)Mathf.Abs(currentPos.x - selectedPos.x) == 3) && ((int)Mathf.Abs(currentPos.y - selectedPos.y) == 1) &&
-                !UnitManager.Instance.currentStatus.ContainsKey(currentPos)
-               )
+                !UnitManager.Instance.currentStatus.ContainsKey(currentPos))
             {
+                Vector3 midPos = Vector3.Lerp(selectedPos, currentPos, 0.5f);
+                HexTile midTile = GridManager.Instance.GetTileAtPos(GridManager.Instance.GetTranslatedPos(midPos));
+
                 if (selectedTile.OccupiedUnit.Faction == Faction.Rock)
                 {
-                    //Debug.Log("5");
-                    Vector3 midPos = Vector3.Lerp(selectedPos, currentPos, 0.5f);
-                    HexTile midTile = GridManager.Instance.GetTileAtPos(GridManager.Instance.GetTranslatedPos(midPos));
-
-                    if (midTile.OccupiedUnit != null && (midTile.OccupiedUnit.Faction == Faction.Scissor) && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Scissor)
+                    if (midTile.OccupiedUnit != null && midTile.OccupiedUnit.Faction == Faction.Scissor && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Scissor)
                     {
-                        //Debug.Log("6");
                         this.SetUnit(selectedTile.OccupiedUnit);
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         midTile.RemoveUnit(midTile.OccupiedUnit);
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
                     }
-
                     else
                     {
-                        //Debug.Log("7");
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
                         return;
                     }
                 }
-
                 else if (selectedTile.OccupiedUnit.Faction == Faction.Paper)
                 {
-                    //Debug.Log("8");
-                    Vector3 midPos = Vector3.Lerp(selectedPos, currentPos, 0.5f);
-                    HexTile midTile = GridManager.Instance.GetTileAtPos(GridManager.Instance.GetTranslatedPos(midPos));
-
-                    if (midTile.OccupiedUnit != null && (midTile.OccupiedUnit.Faction == Faction.Rock) && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Rock)
+                    if (midTile.OccupiedUnit != null && midTile.OccupiedUnit.Faction == Faction.Rock && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Rock)
                     {
-                        //Debug.Log("9");
                         this.SetUnit(selectedTile.OccupiedUnit);
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         midTile.RemoveUnit(midTile.OccupiedUnit);
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
                     }
-
                     else
                     {
-                        //Debug.Log("10");
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
                         return;
                     }
                 }
-
                 else if (selectedTile.OccupiedUnit.Faction == Faction.Scissor)
                 {
-                    //Debug.Log("11");
-                    Vector3 midPos = Vector3.Lerp(selectedPos, currentPos, 0.5f);
-                    HexTile midTile = GridManager.Instance.GetTileAtPos(GridManager.Instance.GetTranslatedPos(midPos));
-
-                    if (midTile.OccupiedUnit != null && (midTile.OccupiedUnit.Faction == Faction.Paper) && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Paper)
+                    if (midTile.OccupiedUnit != null && midTile.OccupiedUnit.Faction == Faction.Paper && UnitManager.Instance.currentStatus[midPos].Faction == Faction.Paper)
                     {
-                        //Debug.Log("12");
                         this.SetUnit(selectedTile.OccupiedUnit);
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         midTile.RemoveUnit(midTile.OccupiedUnit);
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
                     }
-
                     else
                     {
-                        //Debug.Log("13");
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
                         return;
                     }
                 }
-
                 else
                 {
-                    //Debug.Log("14");
                     UnitManager.Instance.SetSelectedTile(null);
                     selectedTile.highlightOnSelect.SetActive(false);
                     return;
@@ -171,7 +143,6 @@ public class HexTile : MonoBehaviour
             }
             else
             {
-                //Debug.Log("15");
                 UnitManager.Instance.SetSelectedTile(null);
                 selectedTile.highlightOnSelect.SetActive(false);
                 return;
