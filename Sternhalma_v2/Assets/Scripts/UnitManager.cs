@@ -30,7 +30,34 @@ public class UnitManager : MonoBehaviour
         tileToUnit = new Dictionary<HexTile, BaseUnit>();
         currentStatus = new Dictionary<Vector3, BaseUnit>();
 
-        List<Vector3> scissorList = new List<Vector3> { new Vector3(0, 0), new Vector3(-3, -1) };
+        for (float x = -3; x <= 3; x += 1.5f)
+        {
+            if (x == -3.0f || x == 3.0f)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    currentStatus[new Vector3(x, y)] = null;
+                }
+            }
+
+            else if (x == -1.5f || x == 1.5f)
+            {
+                for (float y = -1.5f; y <= 1.5f; y++)
+                {
+                    currentStatus[new Vector3(x, y)] = null;
+                }
+            }
+
+            else
+            {
+                for (int y = -2; y <= 2; y++)
+                {
+                    currentStatus[new Vector3(x, y)] = null;
+                }
+            }
+        }
+
+        List<Vector3> scissorList = new List<Vector3> { new Vector3(0, 0)};
         var scissorCount = scissorList.Count;
 
         for (int i = 0; i < scissorCount; i++)
@@ -47,7 +74,7 @@ public class UnitManager : MonoBehaviour
             currentStatus[scissorList[i]] = spawnedScissor;
         }
 
-        List<Vector3> rockList = new List<Vector3> { new Vector3(0, 1) };
+        List<Vector3> rockList = new List<Vector3> { new Vector3(1.5f, -0.5f), new Vector3(-1.5f, -0.5f) };
         var rockCount = rockList.Count;
 
         for (int i = 0; i < rockCount; i++)
@@ -63,7 +90,7 @@ public class UnitManager : MonoBehaviour
             currentStatus[rockList[i]] = spawnedRock;
         }
 
-        List<Vector3> paperList = new List<Vector3> { new Vector3(1.5f, -0.5f) };
+        List<Vector3> paperList = new List<Vector3> { new Vector3(1.5f, 0.5f), new Vector3(0, -1), new Vector3(-1.5f, 0.5f) };
         var paperCount = paperList.Count;
 
         for (int i = 0; i < paperCount; i++)
@@ -92,8 +119,16 @@ public class UnitManager : MonoBehaviour
     public void UpdateCurrentStatus(Vector3 rem1Pos, Vector3 rem2Pos, Vector3 addPos)
     {
         BaseUnit unit = currentStatus[rem1Pos];
-        currentStatus.Remove(rem1Pos);
-        currentStatus.Add(addPos, unit);
-        currentStatus.Remove(rem2Pos);
+        //currentStatus.Remove(rem1Pos);
+        //currentStatus.Add(addPos, unit);
+        //currentStatus.Remove(rem2Pos);
+        currentStatus[rem1Pos] = null;
+        currentStatus[rem2Pos] = null;
+        currentStatus[addPos] = unit;
+    }
+
+    public void UpdateCurrentStatusRotation(Vector3 pos, BaseUnit unit)
+    {
+        currentStatus[pos] = unit;
     }
 }
