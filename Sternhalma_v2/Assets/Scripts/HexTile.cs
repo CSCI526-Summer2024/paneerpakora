@@ -14,6 +14,14 @@ public class HexTile : MonoBehaviour
     public Vector3 posEasy;
     public Vector3 posHard;
 
+    //private Color gr = new Color(0.0f, 0.9f, 0.0f, 0.1f);
+
+    public void SetColorToGreen()
+    {
+        _renderer = GetComponent<SpriteRenderer>();
+        _renderer.color = Color.green;
+    }
+
     private void OnMouseEnter()
     {
         _highlight.SetActive(true);
@@ -101,9 +109,6 @@ public class HexTile : MonoBehaviour
             Vector3 selectedPos = selectedTile.posEasy;
             Vector3 currentPos = this.posEasy;
 
-            //Debug.Log("Here: " + ((int)Mathf.Abs(currentPos.x - selectedPos.x) == 3));
-            //Debug.Log("Here2: " + ((int)Mathf.Abs(currentPos.y - selectedPos.y) == 1));
-
             if ((selectedPos.x == currentPos.x && ((int)Mathf.Abs(currentPos.y - selectedPos.y) == 2)) ||
                 ((int)Mathf.Abs(currentPos.x - selectedPos.x) == 3) && ((int)Mathf.Abs(currentPos.y - selectedPos.y) == 1) &&
                 UnitManager.Instance.currentStatus[currentPos] == null
@@ -124,6 +129,8 @@ public class HexTile : MonoBehaviour
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
+                        this.SetColorToGreen();
+                        UnitManager.Instance.isVisited.Add(this);
                     }
 
                     else
@@ -149,6 +156,8 @@ public class HexTile : MonoBehaviour
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
+                        this.SetColorToGreen();
+                        UnitManager.Instance.isVisited.Add(this);
                     }
 
                     else
@@ -175,6 +184,8 @@ public class HexTile : MonoBehaviour
                         UnitManager.Instance.UpdateCurrentStatus(selectedPos, midPos, currentPos);
                         UnitManager.Instance.SetSelectedTile(null);
                         selectedTile.highlightOnSelect.SetActive(false);
+                        this.SetColorToGreen();
+                        UnitManager.Instance.isVisited.Add(this);
                     }
 
                     else

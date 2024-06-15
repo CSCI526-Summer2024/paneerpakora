@@ -14,6 +14,8 @@ public class UnitManager : MonoBehaviour
     public Dictionary<HexTile, BaseUnit> tileToUnit;
     public Dictionary<Vector3, BaseUnit> currentStatus;
 
+    public HashSet<HexTile> isVisited = new HashSet<HexTile>();
+
     private void Awake()
     {
         Instance = this;
@@ -72,6 +74,9 @@ public class UnitManager : MonoBehaviour
             scissorTile.SetUnit(spawnedScissor);
             tileToUnit[scissorTile] = spawnedScissor;
             currentStatus[scissorList[i]] = spawnedScissor;
+            isVisited.Add(scissorTile);
+            scissorTile.SetColorToGreen();
+
         }
 
         List<Vector3> rockList = new List<Vector3> { new Vector3(1.5f, -0.5f), new Vector3(-1.5f, -0.5f) };
@@ -88,6 +93,8 @@ public class UnitManager : MonoBehaviour
             rockTile.SetUnit(spawnedRock);
             tileToUnit[rockTile] = spawnedRock;
             currentStatus[rockList[i]] = spawnedRock;
+            isVisited.Add(rockTile);
+            rockTile.SetColorToGreen();
         }
 
         List<Vector3> paperList = new List<Vector3> { new Vector3(1.5f, 0.5f), new Vector3(0, -1), new Vector3(-1.5f, 0.5f) };
@@ -106,6 +113,8 @@ public class UnitManager : MonoBehaviour
             paperTile.SetUnit(spawnedPaper);
             tileToUnit[paperTile] = spawnedPaper;
             currentStatus[paperList[i]] = spawnedPaper;
+            isVisited.Add(paperTile);
+            paperTile.SetColorToGreen();
         }
 
         GameManager.Instance.ChangeState(GameState.PlayerTurn);
